@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { IUsers } from "../interfaces/interfaces";
 
-export default class UserRepository {
+class UserRepository {
   public async createUser(data: IUsers) {
     try {
       const insert = await AppDataSource.createQueryBuilder()
@@ -18,3 +18,4 @@ export default class UserRepository {
     }
   }
 }
+export default new UserRepository();

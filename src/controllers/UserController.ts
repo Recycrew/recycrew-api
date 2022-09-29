@@ -1,15 +1,12 @@
 import { Request, Response } from "express";
 import UserService from "../services/UserService";
 
-export default class UserController {
-  constructor(
-    public userService: UserService
-  ) {}
+class UserController {
   public async createUser(req: Request, res: Response) {
     try {
       const { data } = req.body;
 
-      const res = await this.userService.createUser(data);
+      const res = await UserService.createUser(data);
 
       return { status: 200, res }
     } catch (err) {
@@ -17,3 +14,4 @@ export default class UserController {
     }
   }
 }
+export default new UserController();
