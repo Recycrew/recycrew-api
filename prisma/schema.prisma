@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+    referentialIntegrity = "prisma"
+
+}
+
+model User {
+  id    Int       @id @default(autoincrement())
+  name  String    @db.VarChar(255)
+  password String
+  email String    @db.VarChar(255) @unique
+  document_type   DOCUMENT @default(RG)
+  document_number String @db.VarChar(255)
+  address         String @db.VarChar(255)
+  is_collector    Boolean
+  donation Donation[]
+  collect Collect[]
+}
+
+enum DOCUMENT {
+  CPF
+  RG
+}
+
+model Donation {
+  id          Int       @id @default(autoincrement())
+  material    MATERIAL
+  donor       User @relation(fields: [donorId], references: [id])       
+  donorId     Int
+  description String @db.VarChar(255)
+  collect Collect?
+}
+
+enum MATERIAL {
+  PLASTICO
+  VIDRO
+  METAL
+  PAPEL
+}
+
+model Collect {
+  id    Int       @id @default(autoincrement())
+  collector User @relation(fields: [collectorId], references: [id])
+  collectorId Int
+  donation Donation @relation(fields: [donationId], references: [id])
+  donationId Int @unique
+}
