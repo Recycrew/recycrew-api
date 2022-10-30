@@ -8,6 +8,15 @@ class UserController {
     const { name, email, password } = req.body;
     const hashedPassword = await hash(password, 8);
 
+    const userAlreadyExists = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if(userAlreadyExists) {
+      return res.json({ error: "User already exists"});
+    }
     const user = await prisma.user.create({
       data: {
         name,
@@ -27,6 +36,18 @@ class UserController {
     const prisma = new PrismaClient();
     const users = await prisma.user.findMany();
     res.json(users);
+  }
+  async getUser(req: Request, res: Response) {
+    const prisma = new PrismaClient();
+    const { email } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    res.json(user);
   }
 }
 
