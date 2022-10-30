@@ -69,7 +69,7 @@ class UserController {
       const prisma = new PrismaClient();
       const { email } = req.body;
 
-      const userUpdated = await prisma.user.update({
+      const userCollector = await prisma.user.update({
         where: {
           email: email,
         },
@@ -78,9 +78,36 @@ class UserController {
         }
       });
 
-      res.json(userUpdated);
+      res.json(userCollector);
     } catch (error) {
       return res.json({ error: "Couldn't set user as collector" });
+    }
+  }
+
+  async updateUser(req: Request, res: Response) {
+    try {
+      const prisma = new PrismaClient();
+      const { 
+        email, 
+        document_type, 
+        document_number,
+        address, 
+      } = req.body;
+
+      const userUpdated = await prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          document_type: document_type,
+          document_number: document_number,
+          address: address,
+        }
+      });
+
+      res.json(userUpdated);
+    } catch (error) {
+      return res.json({ error: "Couldn't update user" });
     }
   }
 }
