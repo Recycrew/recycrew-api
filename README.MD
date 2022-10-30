@@ -23,7 +23,7 @@ yarn start
 
 
 ### Requisitos
-Usuário deve estar autenticado para fazer essas ações.
+Usuário deve estar autenticado para fazer essas ações (Exceto cadastro).
 - Cadastro de usuário
 - Editar cadasto de usuário
 - Cadastro de doação
