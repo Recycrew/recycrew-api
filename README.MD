@@ -8,6 +8,13 @@
 - Luiz Silveira
 - Samuel Araujo
 
+### Requisitos
+Usuário deve estar autenticado para fazer essas ações (Exceto cadastro).
+- Cadastro de usuário
+- Editar cadasto de usuário
+- Cadastro de doação
+- Cadastro de coleta
+
 ### Build
 ```sh
 yarn
@@ -22,10 +29,5 @@ yarn start
 - [Postman](https://postman.com/) - API platform for developers to design, build, test and iterate their APIs.
 
 
-### Requisitos
-Usuário deve estar autenticado para fazer essas ações (Exceto cadastro).
-- Cadastro de usuário
-- Editar cadasto de usuário
-- Cadastro de doação
-- Cadastro de coleta
+
 
