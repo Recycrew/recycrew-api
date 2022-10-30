@@ -8,4 +8,7 @@ UserRouter.post("/register", UserController.register);
 // UserRouter.use(authMiddleware);
 UserRouter.get("/users", UserController.getUsers);
 UserRouter.get("/user", UserController.getUser);
+UserRouter.put("/set_collector", UserController.setUserCollector);
+
+
 

@@ -63,6 +63,26 @@ class UserController {
       return res.json({ error: "Couldn't get specific user" });
     }
   }
+
+  async setUserCollector(req: Request, res: Response) {
+    try {
+      const prisma = new PrismaClient();
+      const { email } = req.body;
+
+      const userUpdated = await prisma.user.update({
+        where: {
+          email: email,
+        },
+        data: {
+          is_collector: true,
+        }
+      });
+
+      res.json(userUpdated);
+    } catch (error) {
+      return res.json({ error: "Couldn't set user as collector" });
+    }
+  }
 }
 
 export default new UserController();
