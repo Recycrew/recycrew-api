@@ -110,6 +110,23 @@ class UserController {
       throw new Error("Couldn't update user");
     }
   }
+
+  async deleteUser(req: Request, res: Response) {
+    try {
+      const prisma = new PrismaClient();
+      const { email } = req.body;
+
+      const user = await prisma.user.delete({
+        where: {
+          email: email,
+        },
+      });
+
+      res.json(user);
+    } catch (error) {
+      throw new Error("Couldn't delete user");
+    }
+  }
 }
 
 export default new UserController();
