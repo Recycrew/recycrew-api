@@ -4,7 +4,7 @@ import { UserController } from "../controllers";
 
 export const UserRouter = Router();
 
-UserRouter.post("/register", UserController.register);
+UserRouter.post("/register", UserController.registerUser);
 // UserRouter.use(authMiddleware);
 UserRouter.get("/users", UserController.getUsers);
 UserRouter.get("/user", UserController.getUser);

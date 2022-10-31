@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
 class DonationController {
-  async create(req: Request, res: Response) {
+  async createDonation(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
       const { material, donorId, description } = req.body;
@@ -15,7 +15,7 @@ class DonationController {
   
       res.json(donation);
     } catch (error) {
-      return res.json({ error: "Couldn't create donation" });
+      throw new Error("Couldn't create donation");
     }
   }
 
@@ -25,7 +25,7 @@ class DonationController {
       const donation = await prisma.donation.findMany();
       res.json(donation);
     } catch (error) {
-      return res.json({ error: "Couldn't get donation" });
+      throw new Error("Couldn't get donation");
     }
   }
 }

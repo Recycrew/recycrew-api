@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
 class UserController {
-  async register(req: Request, res: Response) {
+  async registerUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
       const { name, email, password } = req.body;
@@ -16,7 +16,7 @@ class UserController {
       });
 
       if (userAlreadyExists) {
-        return res.json({ error: "User already exists" });
+        throw new Error("User already exists");
       }
 
       const user = await prisma.user.create({
@@ -33,7 +33,7 @@ class UserController {
 
       res.json(user);
     } catch (error) {
-      return res.json({ error: "Couldn't create user" });
+      throw new Error("Couldn't create user");
     }
   }
 
@@ -44,7 +44,7 @@ class UserController {
       const users = await prisma.user.findMany();
       res.json(users);
     } catch (error) {
-      return res.json({ error: "Couldn't get users" });
+      throw new Error("Couldn't get users");
     }
   }
   async getUser(req: Request, res: Response) {
@@ -60,7 +60,7 @@ class UserController {
 
       res.json(user);
     } catch (error) {
-      return res.json({ error: "Couldn't get specific user" });
+      throw new Error("Couldn't get specific user");
     }
   }
 
@@ -80,7 +80,7 @@ class UserController {
 
       res.json(userCollector);
     } catch (error) {
-      return res.json({ error: "Couldn't set user as collector" });
+      throw new Error("Couldn't set user as collector");
     }
   }
 
@@ -107,7 +107,7 @@ class UserController {
 
       res.json(userUpdated);
     } catch (error) {
-      return res.json({ error: "Couldn't update user" });
+      throw new Error("Couldn't update user");
     }
   }
 }

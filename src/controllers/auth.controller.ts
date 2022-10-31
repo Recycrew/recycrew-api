@@ -13,13 +13,13 @@ class AuthController {
     });
 
     if (!user) {
-      return res.json({ error: "User not found" });
+      throw new Error("User not found");
     }
 
     const isValidPassword = await compare(password, user.password);
 
     if (!isValidPassword) {
-      return res.json({ error: "Invalid password" });
+      throw new Error("Invalid password");
     }
 
     const token = sign({ id: user.id }, "secret", { expiresIn: "1m" });
