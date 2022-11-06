@@ -5,27 +5,36 @@ class DonationController {
   async createDonation(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { material, donorId, description } = req.body;
-  
+
       const donation = await prisma.donation.create({
         data: {
-          material, donorId, description
+          material,
+          donorId,
+          description,
         },
       });
-  
-      res.json(donation);
+
+      return res.status(201).json(donation);
     } catch (error) {
-      throw new Error("Couldn't create donation");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't create donation" });
     }
   }
 
   async getDonation(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const donation = await prisma.donation.findMany();
-      res.json(donation);
+
+      return res.status(200).json(donation);
     } catch (error) {
-      throw new Error("Couldn't get donation");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't get donation" });
     }
   }
 }
