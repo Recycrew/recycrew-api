@@ -5,3 +5,4 @@ export const DonationRouter = Router();
 
 DonationRouter.post("/donation/create", DonationController.createDonation);
 DonationRouter.get("/donation", DonationController.getDonations);
+DonationRouter.delete("/donation/delete", DonationController.deleteDonation);
