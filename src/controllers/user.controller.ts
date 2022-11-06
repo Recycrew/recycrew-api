@@ -6,6 +6,7 @@ class UserController {
   async registerUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { name, email, password } = req.body;
       const hashedPassword = await hash(password, 8);
 
@@ -16,7 +17,7 @@ class UserController {
       });
 
       if (userAlreadyExists) {
-        throw new Error("User already exists");
+        return res.status(400).json({ message: "User already exists" });
       }
 
       const user = await prisma.user.create({
@@ -24,16 +25,18 @@ class UserController {
           name,
           email,
           password: hashedPassword,
-          address: "saksasa",
-          document_number: "21m12ml21m",
+          address: "address",
+          document_number: "doc_number",
           is_collector: false,
-          document_type: "RG",
+          document_type: "CPF",
         },
       });
 
-      res.json(user);
+      return res.status(201).json(user);
     } catch (error) {
-      throw new Error("Couldn't create user");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't create user" });
     }
   }
 
@@ -42,14 +45,18 @@ class UserController {
       const prisma = new PrismaClient();
 
       const users = await prisma.user.findMany();
-      res.json(users);
+
+      return res.status(200).json(users);
     } catch (error) {
-      throw new Error("Couldn't get users");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't get users" });
     }
   }
   async getUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { email } = req.body;
 
       const user = await prisma.user.findUnique({
@@ -58,15 +65,18 @@ class UserController {
         },
       });
 
-      res.json(user);
+      return res.status(200).json(user);
     } catch (error) {
-      throw new Error("Couldn't get specific user");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't get specific user" });
     }
   }
 
   async setUserCollector(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { email } = req.body;
 
       const userCollector = await prisma.user.update({
@@ -75,24 +85,22 @@ class UserController {
         },
         data: {
           is_collector: true,
-        }
+        },
       });
 
-      res.json(userCollector);
+      return res.status(200).json(userCollector);
     } catch (error) {
-      throw new Error("Couldn't set user as collector");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't set user as collector" });
     }
   }
 
   async updateUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
-      const { 
-        email, 
-        document_type, 
-        document_number,
-        address, 
-      } = req.body;
+
+      const { email, document_type, document_number, address } = req.body;
 
       const userUpdated = await prisma.user.update({
         where: {
@@ -102,18 +110,21 @@ class UserController {
           document_type: document_type,
           document_number: document_number,
           address: address,
-        }
+        },
       });
 
-      res.json(userUpdated);
+      return res.status(201).json(userUpdated);
     } catch (error) {
-      throw new Error("Couldn't update user");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't update user" });
     }
   }
 
   async deleteUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { email } = req.body;
 
       const user = await prisma.user.delete({
@@ -122,9 +133,11 @@ class UserController {
         },
       });
 
-      res.json(user);
+      return res.status(201).json(user);
     } catch (error) {
-      throw new Error("Couldn't delete user");
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't delete user" });
     }
   }
 }
