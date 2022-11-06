@@ -7,4 +7,4 @@ CollectionRouter.post(
   "/collection/create",
   CollectionController.createCollection
 );
-CollectionRouter.get("/collection", CollectionController.getCollection);
+CollectionRouter.get("/collection", CollectionController.getCollections);

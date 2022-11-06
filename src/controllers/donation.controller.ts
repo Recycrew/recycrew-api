@@ -24,7 +24,7 @@ class DonationController {
     }
   }
 
-  async getDonation(req: Request, res: Response) {
+  async getDonations(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
 

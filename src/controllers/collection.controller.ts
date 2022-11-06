@@ -33,7 +33,7 @@ class CollectionController {
     }
   }
 
-  async getCollection(req: Request, res: Response) {
+  async getCollections(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
 
