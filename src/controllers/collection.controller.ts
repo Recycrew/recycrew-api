@@ -5,6 +5,7 @@ class CollectionController {
   async createCollection(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
+
       const { donationId, collectorId } = req.body;
 
       const collectionAlreadyExists = await prisma.collect.findUnique({
@@ -25,7 +26,6 @@ class CollectionController {
       });
 
       return res.status(201).json(collect);
-
     } catch (error) {
       return res
         .status(500)
