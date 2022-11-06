@@ -6,13 +6,24 @@ class CollectionController {
     try {
       const prisma = new PrismaClient();
       const { donationId, collectorId } = req.body;
-  
-      const collect = await prisma.collect.create({
-        data: {
-            donationId, collectorId
+
+      const collectionAlreadyExists = await prisma.collect.findUnique({
+        where: {
+          donationId: donationId,
         },
       });
-  
+
+      if (collectionAlreadyExists) {
+        throw new Error("Collection already exists");
+      }
+
+      const collect = await prisma.collect.create({
+        data: {
+          collectorId: collectorId,
+          donationId: donationId
+        },
+      });
+      
       res.json(collect);
     } catch (error) {
       throw new Error("Couldn't create collection");
