@@ -9,11 +9,20 @@
 - Samuel Araujo
 
 ### Requisitos
-Usuário deve estar autenticado para fazer essas ações (Exceto cadastro).
 - Cadastro de usuário
-- Editar cadasto de usuário
+- Editar cadastro de usuário
+- Excluir cadastro de usuário
+- Alterar usuário para coletor
+- Pesquisar todos usuários
+- Pesquisar usuário específico
+
 - Cadastro de doação
+- Pesquisar todas doações
+- Excluir doação
+
 - Cadastro de coleta
+- Pesquisar todas as coletas
+- Excluir coleta
 
 ### Build
 ```sh
