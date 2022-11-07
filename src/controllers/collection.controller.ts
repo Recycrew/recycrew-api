@@ -51,6 +51,26 @@ class CollectionController {
         .json({ error: error, message: "Couldn't get collections" });
     }
   }
+
+  async deleteCollection(req: Request, res: Response) {
+    try {
+      const prisma = new PrismaClient();
+
+      const { id } = req.body;
+      
+      const deleteCollection = await prisma.collect.delete({
+        where: {
+          id: id,
+        },
+      });
+
+      return res.status(200).json(deleteCollection);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: error, message: "Couldn't delete collection" });
+    }
+  }
 }
 
 export default new CollectionController();
