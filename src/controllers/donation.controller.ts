@@ -1,26 +1,26 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prismaService } from "../service/prisma.service";
 
 class DonationController {
   async createDonation(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       const { material, donorId, description } = req.body;
 
-      const donationAlreadyExists = await prisma.donation.findFirst({
-        where: {
-          donorId: donorId,
-          material: material,
-          description: description,
-        },
-      });
+      const donationAlreadyExists = await prismaService
+        .handler()
+        .donation.findFirst({
+          where: {
+            donorId: donorId,
+            material: material,
+            description: description,
+          },
+        });
 
       if (donationAlreadyExists) {
         return res.status(400).json({ message: "Donation already exists" });
       }
 
-      const donation = await prisma.donation.create({
+      const donation = await prismaService.handler().donation.create({
         data: {
           material,
           donorId,
@@ -30,6 +30,7 @@ class DonationController {
 
       return res.status(201).json(donation);
     } catch (error) {
+      console.log(error);
       return res
         .status(500)
         .json({ error: error, message: "Couldn't create donation" });
@@ -38,9 +39,14 @@ class DonationController {
 
   async getDonations(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
-      const donation = await prisma.donation.findMany();
+      const donation = await prismaService.handler().donation.findMany({
+        select: {
+          donor: true,
+          description: true,
+          material: true,
+          id: true,
+        },
+      });
 
       return res.status(200).json(donation);
     } catch (error) {
@@ -52,12 +58,10 @@ class DonationController {
 
   async deleteDonation(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
-      const { id } = req.body;
-      const deleteDonation = await prisma.donation.delete({
+      const { id } = req.params;
+      const deleteDonation = await prismaService.handler().donation.delete({
         where: {
-          id: id,
+          id: Number(id),
         },
       });
 

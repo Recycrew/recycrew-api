@@ -8,4 +8,11 @@ CollectionRouter.post(
   CollectionController.createCollection
 );
 CollectionRouter.get("/collection", CollectionController.getCollections);
-CollectionRouter.delete("/collection/delete", CollectionController.deleteCollection);
+CollectionRouter.delete(
+  "/collection/delete/:id",
+  CollectionController.deleteCollection
+);
+CollectionRouter.get(
+  "/collection/:collectorId",
+  CollectionController.getCollectionsById
+);

@@ -1,20 +1,21 @@
 import { Request, Response } from "express";
 import { compare, hash } from "bcryptjs";
-import { PrismaClient } from "@prisma/client";
+import { prismaService } from "../service/prisma.service";
 
 class UserController {
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
-    const prisma = new PrismaClient();
 
     try {
-      const userExists = await prisma.user.findUnique({ where: { email } });
+      const userExists = await prismaService
+        .handler()
+        .user.findUnique({ where: { email } });
       if (!userExists) return res.status(400).json("User don't exists!");
 
       const passwordOk = compare(password, userExists.password);
       if (!passwordOk) return res.status(400).json("Wrong credentials!");
 
-      res.json(Math.random().toString(16));
+      res.json(userExists);
     } catch (error) {
       res.status(400).json({ error, message: "Something went wrong!" });
     }
@@ -22,12 +23,18 @@ class UserController {
 
   async registerUser(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
-      const { name, email, password } = req.body;
+      const {
+        name,
+        email,
+        password,
+        address,
+        document_number,
+        is_collector,
+        document_type,
+      } = req.body;
       const hashedPassword = await hash(password, 8);
 
-      const userAlreadyExists = await prisma.user.findUnique({
+      const userAlreadyExists = await prismaService.handler().user.findUnique({
         where: {
           email: email,
         },
@@ -37,15 +44,15 @@ class UserController {
         return res.status(400).json({ message: "User already exists" });
       }
 
-      const user = await prisma.user.create({
+      const user = await prismaService.handler().user.create({
         data: {
           name,
           email,
           password: hashedPassword,
-          address: "address",
-          document_number: "doc_number",
-          is_collector: false,
-          document_type: "CPF",
+          address,
+          document_number,
+          is_collector,
+          document_type,
         },
       });
 
@@ -59,8 +66,7 @@ class UserController {
 
   async getUsers(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-      const users = await prisma.user.findMany();
+      const users = await prismaService.handler().user.findMany();
 
       return res.status(200).json(users);
     } catch (error) {
@@ -71,11 +77,9 @@ class UserController {
   }
   async getUser(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
+      const email = req.query.email as string;
 
-      const { email } = req.body;
-
-      const user = await prisma.user.findUnique({
+      const user = await prismaService.handler().user.findUnique({
         where: {
           email: email,
         },
@@ -91,11 +95,9 @@ class UserController {
 
   async setUserCollector(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       const { email } = req.body;
 
-      const userCollector = await prisma.user.update({
+      const userCollector = await prismaService.handler().user.update({
         where: {
           email: email,
         },
@@ -114,11 +116,9 @@ class UserController {
 
   async updateUser(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       const { email, document_type, document_number, address } = req.body;
 
-      const userUpdated = await prisma.user.update({
+      const userUpdated = await prismaService.handler().user.update({
         where: {
           email: email,
         },
@@ -139,11 +139,9 @@ class UserController {
 
   async deleteUser(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       const { email } = req.body;
 
-      const user = await prisma.user.delete({
+      const user = await prismaService.handler().user.delete({
         where: {
           email: email,
         },

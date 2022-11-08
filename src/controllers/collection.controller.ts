@@ -1,24 +1,24 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prismaService } from "../service/prisma.service";
 
 class CollectionController {
   async createCollection(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       const { donationId, collectorId } = req.body;
 
-      const collectionAlreadyExists = await prisma.collect.findUnique({
-        where: {
-          donationId: donationId,
-        },
-      });
+      const collectionAlreadyExists = await prismaService
+        .handler()
+        .collect.findUnique({
+          where: {
+            donationId: donationId,
+          },
+        });
 
       if (collectionAlreadyExists) {
         return res.status(400).json({ message: "Collection already exists" });
       }
 
-      const collect = await prisma.collect.create({
+      const collect = await prismaService.handler().collect.create({
         data: {
           collectorId: collectorId,
           donationId: donationId,
@@ -35,10 +35,8 @@ class CollectionController {
 
   async getCollections(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
-
       return res.status(200).json(
-        await prisma.collect.findMany({
+        await prismaService.handler().collect.findMany({
           select: {
             donation: true,
             collector: true,
@@ -54,13 +52,11 @@ class CollectionController {
 
   async deleteCollection(req: Request, res: Response) {
     try {
-      const prisma = new PrismaClient();
+      const { id } = req.params;
 
-      const { id } = req.body;
-      
-      const deleteCollection = await prisma.collect.delete({
+      const deleteCollection = await prismaService.handler().collect.delete({
         where: {
-          id: id,
+          id: Number(id),
         },
       });
 
@@ -70,6 +66,31 @@ class CollectionController {
         .status(500)
         .json({ error: error, message: "Couldn't delete collection" });
     }
+  }
+
+  async getCollectionsById(req: Request, res: Response) {
+    const { collectorId } = req.params;
+
+    const collections = await prismaService.handler().collect.findMany({
+      select: {
+        donation: {
+          select: {
+            donor: true,
+            description: true,
+            material: true,
+            id: true,
+          },
+        },
+        id: true,
+      },
+      where: {
+        collectorId: Number(collectorId),
+      },
+    });
+
+    if (!collections.length) return res.status(400).json("Não há coletas");
+
+    res.json(collections);
   }
 }
 
