@@ -1,8 +1,25 @@
 import { Request, Response } from "express";
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
 class UserController {
+  async login(req: Request, res: Response) {
+    const { email, password } = req.body;
+    const prisma = new PrismaClient();
+
+    try {
+      const userExists = await prisma.user.findUnique({ where: { email } });
+      if (!userExists) return res.status(400).json("User don't exists!");
+
+      const passwordOk = compare(password, userExists.password);
+      if (!passwordOk) return res.status(400).json("Wrong credentials!");
+
+      res.json(Math.random().toString(16));
+    } catch (error) {
+      res.status(400).json({ error, message: "Something went wrong!" });
+    }
+  }
+
   async registerUser(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
@@ -43,7 +60,6 @@ class UserController {
   async getUsers(req: Request, res: Response) {
     try {
       const prisma = new PrismaClient();
-
       const users = await prisma.user.findMany();
 
       return res.status(200).json(users);
